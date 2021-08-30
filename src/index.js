@@ -1,7 +1,8 @@
 
+import ImageApiService from './js/apiService';
 import galleryCardTps from './templates/gallery-card-tps.hbs';
 import './sass/main.scss';
-import ImageApiService from './js/apiService';
+
 
 
 const refs = {
@@ -40,7 +41,7 @@ function clearGallery() {
 }
 
 function onLoadMore() {
-    imageApiService.fetchGallery().then(renderImages);;
+    imageApiService.fetchGallery().then(renderImages);
 }
 
 
