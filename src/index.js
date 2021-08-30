@@ -1,7 +1,8 @@
 
 import galleryCardTps from './templates/gallery-card-tps.hbs';
-
 import './sass/main.scss';
+import ImageApiService from './js/apiService';
+
 
 const refs = {
     form: document.querySelector('#search-form'),
@@ -10,43 +11,36 @@ const refs = {
     gallery: document.querySelector('.gallery')   
 }
 
-refs.input.addEventListener('input', onFetchImages);
-refs.moreBtn.addEventListener('click', onFetchImages);
+refs.form.addEventListener('submit', onFetchImages);
+refs.moreBtn.addEventListener('click', onLoadMore);
 
-let currentPage = 1;
+
+const imageApiService = new ImageApiService();
 
 
 function onFetchImages(e) {
-e.preventDefault();
-const value = e.target.value;
-console.log(value);
-currentPage++;
-console.log(currentPage);
-
-return fetch(`https://pixabay.com/api/?image_type=photo&orientation=horizontal&q=${value}&page=${currentPage}&per_page=12&key=23141272-55f7853bfecadbbcd9800c5ad`)
-.then(response => response.json())
-.then(result => {
+    e.preventDefault();
     clearGallery();
-    renderImages(result.hits);    
-    // currentPage++;
-    // console.log(currentPage);
-})    
-// .then(() => {
-//     currentPage++;
-//     console.log(currentPage)
-// })
-.catch((err) => console.log(error))
+    
+    imageApiService.value = e.currentTarget.elements.query.value;
+    console.log(imageApiService.value);
+    imageApiService.resetPage();
+    imageApiService.fetchGallery().then(renderImages);
 }
 
 
 function renderImages(hits) {
     const markUpImages = galleryCardTps(hits);
-    refs.gallery.insertAdjacentHTML('afterbegin', markUpImages);
+    refs.gallery.insertAdjacentHTML('beforeend', markUpImages);
 }
 
 
 function clearGallery() {
     refs.gallery.innerHTML = '';
+}
+
+function onLoadMore() {
+    imageApiService.fetchGallery().then(renderImages);;
 }
 
 
