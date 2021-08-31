@@ -44,6 +44,13 @@ function onLoadMore() {
     imageApiService.fetchGallery().then(renderImages);
 }
 
+const element = document.getElementById('.my-element-selector');
+element.scrollIntoView({
+  behavior: 'smooth',
+  block: 'end',
+});
+
+
 
 
 
