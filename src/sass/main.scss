@@ -51,6 +51,15 @@ body {
 }
 
 
+.btn-hidden {
+    opacity: 0;
+}
+
+.btn-open {
+    opacity: 1;
+}
+
+
 .gallery {
     margin-bottom: 50px;
     display: grid;
@@ -72,3 +81,4 @@ body {
     justify-content: space-around;
 
 }
+

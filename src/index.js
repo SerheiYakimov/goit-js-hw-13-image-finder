@@ -22,11 +22,13 @@ const imageApiService = new ImageApiService();
 function onFetchImages(e) {
     e.preventDefault();
     clearGallery();
+   
     
     imageApiService.value = e.currentTarget.elements.query.value;
     console.log(imageApiService.value);
     imageApiService.resetPage();
     imageApiService.fetchGallery().then(renderImages);
+    refs.moreBtn.classList.replace('btn-hidden', 'btn-open');
 }
 
 
@@ -44,11 +46,11 @@ function onLoadMore() {
     imageApiService.fetchGallery().then(renderImages);
 }
 
-const element = document.getElementById('.my-element-selector');
-element.scrollIntoView({
-  behavior: 'smooth',
-  block: 'end',
-});
+// const element = document.getElementById('.my-element-selector');
+// element.scrollIntoView({
+//   behavior: 'smooth',
+//   block: 'end',
+// });
 
 
 
