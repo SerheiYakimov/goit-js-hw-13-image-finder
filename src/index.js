@@ -3,6 +3,7 @@ import ImageApiService from './js/apiService';
 import galleryCardTps from './templates/gallery-card-tps.hbs';
 import { alert } from '../node_modules/@pnotify/core/dist/PNotify.js';
 import '@pnotify/core/dist/BrightTheme.css';
+import * as basicLightbox from 'basiclightbox';
 import './sass/main.scss';
 
 
@@ -40,11 +41,6 @@ function onFetchImages(e) {
             text: 'Enter more letter for search!'
         });
     }
-    // if (imageApiService.value.length < 3 || imageApiService.value.length > 1) {
-    //     alert({
-    //         text: 'Enter more letter for search!'
-    //     });
-    // }
     else {
     imageApiService.resetPage();
     imageApiService.fetchGallery().then(renderImages);
@@ -93,6 +89,21 @@ function onScrollUp() {
     });
     refs.upBtn.classList.replace('btn-open', 'btn-hidden');
 }
+
+
+const instance = basicLightbox.create(`
+    <div class="modal">
+        <p>
+            Your first lightbox with just a few lines of code.
+            Yes, it's really that simple.
+        </p>
+    </div>
+`)
+
+function showFullImage() {
+    instance.show()
+}
+
 
 
 
