@@ -1,6 +1,8 @@
 
 import ImageApiService from './js/apiService';
 import galleryCardTps from './templates/gallery-card-tps.hbs';
+import { alert } from '../node_modules/@pnotify/core/dist/PNotify.js';
+import '@pnotify/core/dist/BrightTheme.css';
 import './sass/main.scss';
 
 
@@ -32,11 +34,25 @@ function onFetchImages(e) {
     
     imageApiService.value = e.currentTarget.elements.query.value;
     console.log(imageApiService.value);
+
+    if (imageApiService.value === '' || imageApiService.value.length < 3) {
+        alert({
+            text: 'Enter more letter for search!'
+        });
+    }
+    // if (imageApiService.value.length < 3 || imageApiService.value.length > 1) {
+    //     alert({
+    //         text: 'Enter more letter for search!'
+    //     });
+    // }
+    else {
     imageApiService.resetPage();
     imageApiService.fetchGallery().then(renderImages);
    
     refs.moreBtn.classList.replace('btn-hidden', 'btn-open');
     refs.upBtn.classList.replace('btn-hidden', 'btn-open');
+    }
+    
     
 }
 
@@ -52,6 +68,7 @@ function renderImages(hits) {
 
 function clearGallery() {
     refs.gallery.innerHTML = '';
+    refs.moreBtn.classList.replace('btn-open', 'btn-hidden');
 }
 
 function onLoadMore() {
@@ -74,6 +91,7 @@ function onScrollUp() {
         top: 0,
         behavior: "smooth"
     });
+    refs.upBtn.classList.replace('btn-open', 'btn-hidden');
 }
 
 
