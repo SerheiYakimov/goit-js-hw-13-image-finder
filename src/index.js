@@ -41,9 +41,7 @@ function onFetchImages(e) {
         refs.gallery.addEventListener('click', onShowFullImage);
         
         refs.moreBtn.classList.replace('btn-hidden', 'btn-open');
-    }
-    
-    
+    } 
 }
 
 function buttonHide() {
@@ -54,21 +52,18 @@ function buttonHide() {
 
 function renderImages(result) {
     const markUpImages = galleryCardTps(result.hits);
-    refs.gallery.insertAdjacentHTML('beforeend', markUpImages);
-    
+    refs.gallery.insertAdjacentHTML('beforeend', markUpImages);    
 }
 
 function clearGallery() {
     refs.gallery.innerHTML = '';
-    buttonHide();
-    
+    buttonHide();    
 }
 
 
 function onLoadMore() {
     imageApiService.fetchGallery().then(renderImages).then(showScroll);
-    refs.upBtn.classList.replace('btn-hidden', 'btn-open');
-          
+    refs.upBtn.classList.replace('btn-hidden', 'btn-open');          
 }
 
 
@@ -77,7 +72,6 @@ function showScroll() {
         behavior: 'smooth',
         block: 'end'
       });
-
 }
 
 function onScrollUp() {
@@ -104,29 +98,29 @@ function totalHits(result) {
         clearGallery();
         error({
                 title: 'Nothing is found.',
-                    text: 'Please check if the input is correct'
-          });
+                text: 'Please check if the input is correct'
+        });
        
         return result;
        
-        }
-        if (result.total <= 12) {
-            clearGallery();
-            alert ({
+    }
+    if (result.total <= 12) {
+        clearGallery();
+        alert ({
                 title: 'Success',
                 text: `Found ${result.total} matches`
-            })
-            return result;
+        })
+        return result;
        
-        }
-        if (result.total > 12) {
-            refs.upBtn.classList.replace('btn-hidden', 'btn-open');
-            alert ({
+    }
+    if (result.total > 12) {
+        refs.upBtn.classList.replace('btn-hidden', 'btn-open');
+        alert ({
                 title: 'Success',
                 text: `Found ${result.total} matches`
-            })
-                return result; 
-        }        
+        })
+        return result; 
+    }        
         
 }
 
