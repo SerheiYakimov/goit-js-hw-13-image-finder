@@ -9,9 +9,10 @@ export default class ImageApiService {
     .then(response => response.json())
     .then(result => {
         this.incrementPage();
-        console.log(this);    
-        return result.hits;    
+        console.log(this);       
+        return result; 
     })
+    .catch(error => console.log(error)) 
    
     }
 

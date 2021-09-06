@@ -1,85 +1,73 @@
 
 import ImageApiService from './js/apiService';
 import galleryCardTps from './templates/gallery-card-tps.hbs';
-// import modalImage from './templates/modal-image.hbs';
-import { alert } from '../node_modules/@pnotify/core/dist/PNotify.js';
+import refs from './js/refs.js';
+import { alert, error } from '../node_modules/@pnotify/core/dist/PNotify.js';
 import '@pnotify/core/dist/BrightTheme.css';
 import * as basicLightbox from 'basiclightbox';
-import '../node_modules/basiclightbox/dist/basicLightbox.min.css'
+import '../node_modules/basiclightbox/dist/basicLightbox.min.css';
 import './sass/main.scss';
 
 
-
-const refs = {
-    form: document.querySelector('#search-form'),
-    input: document.querySelector('input'),
-    moreBtn: document.querySelector('#more'),
-    gallery: document.querySelector('.gallery'),
-    upBtn: document.querySelector('#up')
-    
-}
 
 refs.form.addEventListener('submit', onFetchImages);
 refs.moreBtn.addEventListener('click', onLoadMore);
 refs.upBtn.addEventListener('click', onScrollUp);
 
 
-   
 const imageApiService = new ImageApiService();
 const hiddenElement = document.getElementById('more');
-
 
 
 
 function onFetchImages(e) {
     e.preventDefault();
     clearGallery();
-    
-    
+        
     imageApiService.value = e.currentTarget.elements.query.value;
-    console.log(imageApiService.value);
+    
 
     if (imageApiService.value === '' || imageApiService.value.length < 3) {
         alert({
+            title: 'Alert!',
             text: 'Enter more letter for search!'
         });
+        return;
     }
     else {
-    imageApiService.resetPage();
-    imageApiService.fetchGallery().then(renderImages);
+        imageApiService.resetPage();
+        imageApiService.fetchGallery().then(totalHits).then(renderImages).then(showScroll);
         
-    refs.gallery.addEventListener('click', onShowFullImage);
-    
-    refs.moreBtn.classList.replace('btn-hidden', 'btn-open');
-    refs.upBtn.classList.replace('btn-hidden', 'btn-open');
+        refs.gallery.addEventListener('click', onShowFullImage);
+        
+        refs.moreBtn.classList.replace('btn-hidden', 'btn-open');
     }
     
     
 }
 
-
-function renderImages(hits) {
-    const markUpImages = galleryCardTps(hits);
-    refs.gallery.insertAdjacentHTML('beforeend', markUpImages);
-    showScroll();
-    
-    
+function buttonHide() {
+    refs.moreBtn.classList.replace('btn-open', 'btn-hidden');
+    refs.upBtn.classList.replace('btn-open', 'btn-hidden');
 }
 
-// function renderLargeImage(hits) {
-//     const markUpLargeImage = modalImage(hits);
-//     refs.gallery.insertAdjacentHTML('beforeend', markUpLargeImage);
 
-// }
-
+function renderImages(result) {
+    const markUpImages = galleryCardTps(result.hits);
+    refs.gallery.insertAdjacentHTML('beforeend', markUpImages);
+    
+}
 
 function clearGallery() {
     refs.gallery.innerHTML = '';
-    refs.moreBtn.classList.replace('btn-open', 'btn-hidden');
+    buttonHide();
+    
 }
 
+
 function onLoadMore() {
-    imageApiService.fetchGallery().then(renderImages);
+    imageApiService.fetchGallery().then(renderImages).then(showScroll);
+    refs.upBtn.classList.replace('btn-hidden', 'btn-open');
           
 }
 
@@ -89,6 +77,7 @@ function showScroll() {
         behavior: 'smooth',
         block: 'end'
       });
+
 }
 
 function onScrollUp() {
@@ -99,26 +88,47 @@ function onScrollUp() {
     refs.upBtn.classList.replace('btn-open', 'btn-hidden');
 }
 
-
-
-
-// instance.show()
-
 function onShowFullImage(e) {
-    e.preventDefault();
-    console.log(e.target.nodeName);
-    
-
+    e.preventDefault();    
     if (e.target.nodeName !== 'IMG') {
         return
     }
-    const src = imageApiService.fetchGallery().then(this.largeImageURL);
-
+    const src = e.target.dataset.source;
     const instance = basicLightbox.create(`<img src=${src} width="1280" height="600" />`);
-    instance.show()
+    instance.show();
 }
 
 
+function totalHits(result) {
+    if (result.total === 0) {
+        clearGallery();
+        error({
+                title: 'Nothing is found.',
+                    text: 'Please check if the input is correct'
+          });
+       
+        return result;
+       
+        }
+        if (result.total <= 12) {
+            clearGallery();
+            alert ({
+                title: 'Success',
+                text: `Found ${result.total} matches`
+            })
+            return result;
+       
+        }
+        if (result.total > 12) {
+            refs.upBtn.classList.replace('btn-hidden', 'btn-open');
+            alert ({
+                title: 'Success',
+                text: `Found ${result.total} matches`
+            })
+                return result; 
+        }        
+        
+}
 
 
 
