@@ -10,6 +10,7 @@ import './sass/main.scss';
 
 
 
+
 refs.form.addEventListener('submit', onFetchImages);
 refs.moreBtn.addEventListener('click', onLoadMore);
 refs.upBtn.addEventListener('click', onScrollUp);
@@ -36,7 +37,7 @@ function onFetchImages(e) {
     }
     else {
         imageApiService.resetPage();
-        imageApiService.fetchGallery().then(totalHits).then(renderImages).then(showScroll);
+        imageApiService.fetchGallery().then(totalHits).then(renderImages);
         
         refs.gallery.addEventListener('click', onShowFullImage);
         
